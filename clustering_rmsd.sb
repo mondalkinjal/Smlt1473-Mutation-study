@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=pytorch-gpu-shared
+#### Change account below
+#SBATCH --account=mda123
+#SBATCH --partition=gpu-debug
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=90G
+#SBATCH --gpus=1
+#SBATCH --time=00:30:00
+#SBATCH --output=pytorch-gpu-shared.o%j.%N
+
+
+mutations=("WT" "H221F")
+muttemplete="/expanse/lustre/projects/mda123/kmondal/fresh_folder/dataset_preparation/[mutation]"
+dirh="H123"
+dirnoh="NOH123"
+
+. "/home/kmondal/miniconda3/etc/profile.d/conda.sh"
+conda activate DL
+export OMP_NUM_THREADS=2
+
+for mutation in "${mutations[@]}"; do
+        cd /expanse/lustre/projects/mda123/kmondal/fresh_folder/dataset_preparation/GNN
+	mut="${muttemplete//\[mutation\]/$mutation}"
+	cp -r backend_GMVAE $mut
+       	cp clustering.py $mut
+       	cp rmsd.py $mut
+	cp aligned_trajectory.py $mut
+	cp clustering.sb $mut
+        cp rmsd.sb $mut
+        cp aligned_trajectory.sb $mut
+	cp all_residues.txt $mut
+	cd $mut
+        sbatch clustering.sb
+	sbatch rmsd.sb
+	sbatch aligned_trajectory.sb
+done
+

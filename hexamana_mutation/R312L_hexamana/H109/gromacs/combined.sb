@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=R312L_hexamana
+#SBATCH --account=mda123
+#SBATCH --partition=gpu-shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=5
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=94348M
+#SBATCH --gpus=1
+#SBATCH --time=48:00:00
+#SBATCH --output=gromacs-2020.4-expanse-gpu.%j.out
+
+module purge
+module load slurm
+module load gpu/0.15.4
+module load openmpi
+module load gromacs
+
+mpirun --mca btl_openib_allow_ib true -np 1  gmx_mpi grompp \
+  -f step4.0_minimization.mdp \
+  -c step3_input.gro \
+  -r step3_input.gro \
+  -p topol.top \
+  -po "mdout.${SLURM_JOB_ID}.mdp" \
+  -o step4.0_minimization.tpr
+
+export OMP_NUM_THREADS=2
+mpirun --mca btl_openib_allow_ib true -np 5  gmx_mpi mdrun \
+  -nb gpu \
+  -pme cpu \
+  -bonded cpu \
+  -pin on \
+  -resethway \
+  -noconfout \
+  -v \
+  -deffnm step4.0_minimization
+
+mpirun --mca btl_openib_allow_ib true -np 1  gmx_mpi grompp \
+  -f step4.1_equilibration.mdp \
+  -c step4.0_minimization.gro \
+  -r step3_input.gro \
+  -p topol.top \
+  -po "mdout.${SLURM_JOB_ID}.mdp" \
+  -o step4.1_equilibration.tpr \
+  -n index.ndx
+export OMP_NUM_THREADS=2
+mpirun --mca btl_openib_allow_ib true -np 5  gmx_mpi mdrun \
+  -nb gpu \
+  -pme cpu \
+  -bonded cpu \
+  -pin on \
+  -resethway \
+  -v \
+  -deffnm step4.1_equilibration
+
+mpirun --mca btl_openib_allow_ib true -np 1  gmx_mpi grompp \
+  -f step5_production.mdp \
+  -c step4.1_equilibration.gro \
+  -r step3_input.gro \
+  -p topol.top \
+  -po "mdout.${SLURM_JOB_ID}.mdp" \
+  -o step5_production.tpr \
+  -n index.ndx
+export OMP_NUM_THREADS=2
+mpirun --mca btl_openib_allow_ib true -np 5  gmx_mpi mdrun \
+  -nb gpu \
+  -pme cpu \
+  -bonded cpu \
+  -pin on \
+  -resethway \
+  -noconfout \
+  -v \
+  -s step5_production.tpr \
+  -deffnm step5_production
+

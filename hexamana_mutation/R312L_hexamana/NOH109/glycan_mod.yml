@@ -1,0 +1,12 @@
+---
+- 
+  chain: X
+  type: ligand
+  grs: |
+    6 BMANA
+    1 - 14B: BMANA
+    5 - - 14B: BMANA
+    2 - - - 14B: BMANA
+    3 - - - - 14B: BMANA
+    4 - - - - - 14B: BMANA
+  segid: CARA

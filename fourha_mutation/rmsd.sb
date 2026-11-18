@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=tetraha
+#SBATCH --account=mda123
+#SBATCH --partition=debug
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=94348M
+#SBATCH --time=00:30:00
+#SBATCH --output=gromacs-2020.4-expanse-gpu.%j.out
+
+
+. "/expanse/lustre/projects/mda123/kmondal/miniconda/etc/profile.d/conda.sh"
+conda activate py37
+python3 rmsd.py 

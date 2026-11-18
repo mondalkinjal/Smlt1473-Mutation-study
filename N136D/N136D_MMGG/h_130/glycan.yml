@@ -1,0 +1,19 @@
+- chain: X
+  glycan_list:
+    X: [1, 2, 3, 4]
+  grs: |
+    4 BMANA
+    1 - 14B: BMANA
+    2 - - 14B: BGLCA
+    3 - - - 14B: BGLCA
+  patches: {}
+  residue_list: [1, 2, 3, 4]
+  residues:
+    1: {ires: 1, linkage: 14BB, linkage_patch: 14BB, linked_chain: X, linked_ires: 4, linked_resid: 4, resid: 1, resname: BMANA}
+    2: {ires: 2, linkage: 14BB, linkage_patch: 14BB, linked_chain: X, linked_ires: 1, linked_resid: 1, resid: 2, resname: BGLCA}
+    3: {ires: 3, linkage: 14BB, linkage_patch: 14BB, linked_chain: X, linked_ires: 2, linked_resid: 2, resid: 3, resname: BGLCA}
+    4: {ires: 4, linkage: null, linkage_patch: null, linked_chain: null, linked_ires: null, linked_resid: null, resid: 4, resname: BMANA}
+  root: 4
+  segid: CARA
+  type: ligand
+

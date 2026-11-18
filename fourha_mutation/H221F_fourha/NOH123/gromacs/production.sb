@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=tetrahah
+#SBATCH --account=mda123
+#SBATCH --partition=gpu-shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=5
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=94348M
+#SBATCH --gpus=1
+#SBATCH --time=48:00:00
+#SBATCH --output=gromacs-2020.4-expanse-gpu.%j.out
+
+module purge
+module load slurm
+module load gpu/0.15.4
+module load openmpi
+module load gromacs
+
+export OMP_NUM_THREADS=2
+mpirun --mca btl_openib_allow_ib true -np 5  gmx_mpi mdrun \
+  -nb gpu \
+  -pme cpu \
+  -bonded cpu \
+  -pin on \
+  -resethway \
+  -noconfout \
+  -v \
+  -cpi step5_production.cpt \
+  -s step5_production.tpr \
+  -deffnm step5_production

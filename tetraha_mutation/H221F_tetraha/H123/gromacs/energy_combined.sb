@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=tetraha
+#SBATCH --account=mda123
+#SBATCH --partition=gpu-debug
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=5
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=94348M
+#SBATCH --gpus=1
+#SBATCH --time=00:30:00
+#SBATCH --output=gromacs-2020.4-expanse-gpu.%j.out
+
+module purge
+module load slurm
+module load gpu/0.15.4
+module load openmpi
+module load gromacs
+
+mpirun --mca btl_openib_allow_ib true -np 1 gmx_mpi make_ndx -f step4.1_equilibration.gro -o index_protein_ligand.ndx -n index.ndx<<EOF
+ri 1-308
+ri 309-312 
+q
+EOF
+
+function mdp_add_energy_groups ()
+
+{
+
+    input_mdp_file_="$1";
+
+    output_mdp_file_="$2";
+
+    energy_groups_="$3";
+
+    cp -r "${input_mdp_file_}" "${output_mdp_file_}";
+
+    echo "" >> "${output_mdp_file_}";
+
+    echo "; ENERGY GROUPS " >> "${output_mdp_file_}";
+
+    echo "energygrps          = ${energy_groups_}" >> "${output_mdp_file_}";
+
+    echo "----- mdp_add_energy_groups -----";
+
+    echo "--> Created ${output_mdp_file_} from ${input_mdp_file_}";
+
+    echo "--> Added energy groups: ${energy_groups_}"
+
+}
+mdp_add_energy_groups "step5_production.mdp" "step5_protein_ligand.mdp" "r_1-308 r_309-312"
+
+mpirun --mca btl_openib_allow_ib true -np 1 gmx_mpi grompp -f step5_protein_ligand.mdp -c  step4.1_equilibration.gro -po "mdout.${SLURM_JOB_ID}.mdp" -o step5_protein_ligand.tpr -n index_protein_ligand.ndx
+
+export OMP_NUM_THREADS=2
+
+mpirun --mca btl_openib_allow_ib true -np 5  gmx_mpi mdrun -nb cpu -pme cpu -bonded cpu -pin on -resethway -s step5_protein_ligand.tpr -rerun step5_production.xtc -e energy_protein_ligand.edr
+
+mpirun --mca btl_openib_allow_ib true -np 1 gmx_mpi energy -f energy_protein_ligand.edr -s step5_protein_ligand.tpr -o energy_protein_ligand.xvg<<EOF
+21
+22
+23
+24
+0
+EOF

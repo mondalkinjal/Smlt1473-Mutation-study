@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=pytorch-gpu-shared
+#### Change account below
+#SBATCH --account=mda123
+#SBATCH --partition=gpu-debug
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=90G
+#SBATCH --gpus=1
+#SBATCH --time=00:30:00
+#SBATCH --output=pytorch-gpu-shared.o%j.%N
+
+. "/home/kmondal/miniconda3/etc/profile.d/conda.sh"
+conda activate GNN
+
+python3 aligned_trajectory.py

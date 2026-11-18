@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=tetraha
+#SBATCH --account=mda123
+#SBATCH --partition=compute
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=5
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=94348M
+#SBATCH --time=00:30:00
+#SBATCH --output=gromacs-2020.4-expanse-gpu.%j.out
+
+module load cpu/0.17.3b
+module load gcc/10.2.0/npcyll4
+module load vmd/1.9.3
+
+vmd -e h_bonds.tcl
+
+#cd ./saltbridges
+#export PATH="/cm/shared/apps/sdsc/galyleo:${PATH}"
+#. "/home/kmondal/miniconda3/etc/profile.d/conda.sh"
+#conda activate DL
+#python3 salt_bridge.py

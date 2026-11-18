@@ -1,0 +1,14 @@
+---
+- 
+  chain: X
+  type: ligand
+  grs: |
+    2 BGLCNA
+    3 - 13B: BGLCA
+    4 - - 14B: BGLCNA
+    1 - - - 13B: BGLCA
+    5 - - - - 14B: BGLCNA
+    8 - - - - - 13B: BGLCA
+    6 - - - - - - 14B: BGLCNA
+    7 - - - - - - - 13B: BGLCA
+  segid: CARA

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=gromacs-2020.4-expanse-cpu
+#SBATCH --account=mda123
+#SBATCH --partition=compute
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=94348M
+#SBATCH --time=20:00:00
+#SBATCH --output=gromacs-2020.4-expanse-cpu.%j.out
+
+cd /expanse/lustre/projects/mda123/kmondal/fresh_folder
+cp -r fourha_beta /expanse/lustre/projects/mda123/kmondal/fresh_folder/fourha_mutation
+cp -r H221F_fourha_beta /expanse/lustre/projects/mda123/kmondal/fresh_folder/fourha_mutation
+
+
+

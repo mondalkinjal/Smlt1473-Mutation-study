@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=gromacs-2020.4-expanse-cpu
+#SBATCH --account=mda123
+#SBATCH --partition=compute
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=94348M
+#SBATCH --time=20:00:00
+#SBATCH --output=gromacs-2020.4-expanse-cpu.%j.out
+
+. "/home/kmondal/miniconda3/etc/profile.d/conda.sh"
+conda activate GNN
+
+sugars=( "fourha"   "tetraha"   "hexamana" )
+WThtemplete="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/[mutation]/H123/gromacs"
+WTnohtemplete="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/[mutation]/NOH123/gromacs"
+H221Fhtemplete="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/H221F_[mutation]/H123/gromacs"
+H221Fnohtemplete="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/H221F_[mutation]/NOH123/gromacs"
+WThtempletehexamana="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/[mutation]/H109/gromacs"
+WTnohtempletehexamana="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/[mutation]/NOH109/gromacs"
+R312Lhtemplete="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/R312L_[mutation]/H109/gromacs"
+R312Lnohtemplete="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/R312L_[mutation]/NOH109/gromacs"
+H221Fhtempletehexamana="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/H221F_[mutation]/H109/gromacs"
+H221Fnohtempletehexamana="/expanse/lustre/projects/mda123/kmondal/fresh_folder/biochemistry_mutation/[mutation]_mutation/H221F_[mutation]/NOH109/gromacs"
+
+for mutation in "${sugars[@]}"; do
+        WTh="${WThtemplete//\[mutation\]/$mutation}"
+        WTnoh="${WTnohtemplete//\[mutation\]/$mutation}"
+        H221Fh="${H221Fhtemplete//\[mutation\]/$mutation}"
+        H221Fnoh="${H221Fnohtemplete//\[mutation\]/$mutation}"
+        R312Lh="${R312Lhtemplete//\[mutation\]/$mutation}"
+        R312Lnoh="${R312Lnohtemplete//\[mutation\]/$mutation}"
+        if [ "$mutation" == hexamana ]; then
+                WTh="${WThtempletehexamana//\[mutation\]/$mutation}"
+                WTnoh="${WTnohtempletehexamana//\[mutation\]/$mutation}"
+                H221Fh="${H221Fhtempletehexamana//\[mutation\]/$mutation}"
+                H221Fnoh="${H221Fnohtempletehexamana//\[mutation\]/$mutation}"
+        fi
+        cp aligned_trajectory.sb $WTh
+        cp aligned_trajectory.sb $WTnoh
+        cp aligned_trajectory.sb $H221Fh
+        cp aligned_trajectory.sb $H221Fnoh
+	cp aligned_trajectory.py $WTh
+        cp aligned_trajectory.py $WTnoh
+        cp aligned_trajectory.py $H221Fh
+        cp aligned_trajectory.py $H221Fnoh
+        if [ "$mutation" == hexamana ]; then
+		cp aligned_trajectory.sb $R312Lh
+        	cp aligned_trajectory.sb $R312Lnoh
+		cp aligned_trajectory.py $R312Lh
+        	cp aligned_trajectory.py $R312Lnoh
+	fi
+	cd $WTh
+	python3 aligned_trajectory.py
+	cd $WTnoh
+	python3 aligned_trajectory.py
+	cd $H221Fh
+	python3 aligned_trajectory.py
+	cd $H221Fnoh
+	python3 aligned_trajectory.py
+	if [ "$mutation" == hexamana ]; then
+                cd $R312Lh
+		python3 aligned_trajectory.py
+                cd $R312Lnoh
+                python3 aligned_trajectory.py
+        fi
+done
+
+
+
+
+
+
+
+done

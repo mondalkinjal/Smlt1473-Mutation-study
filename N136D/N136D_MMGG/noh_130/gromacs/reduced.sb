@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=tetraha
+#SBATCH --account=mda123
+#SBATCH --partition=gpu-shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=5
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=94348M
+#SBATCH --gpus=1
+#SBATCH --time=01:00:00
+#SBATCH --output=gromacs-2020.4-expanse-gpu.%j.out
+
+module purge
+module load slurm
+module load gpu/0.15.4
+module load openmpi
+module load gromacs
+
+mpirun --mca btl_openib_allow_ib true -np 1 gmx_mpi select -f step5_production.xtc -n index.ndx -on output.ndx <<EOF
+0
+EOF
+mpirun --mca btl_openib_allow_ib true -np 1 gmx_mpi trjconv -f step5_production.xtc -n output.ndx -o final_production.xtc -pbc nojump
+mpirun --mca btl_openib_allow_ib true -np 1 gmx_mpi editconf -f step4.1_equilibration.gro -n output.ndx -o protein_ligand.gro
+done
+
+
