@@ -1,10 +1,20 @@
 # Effect of Mutations on Smlt1473 Binding to Various Substrates Using Molecular Dynamics Simulations
 
-Code and simulation input files accompanying the manuscript:
+Original code and simulation parameter files accompanying the manuscript:
 
 > **Effect of Mutations on Smlt1473 Binding to Various Substrates Using Molecular Dynamics Simulations**
-> *J. Phys. Chem. B* **2025**, 129 (16), 3948.
-> Manuscript: [https://pubs.acs.org/jpcbfk/article/129/16/3948/3650020/Effect-of-Mutations-on-Smlt1473-Binding-to-Various](https://pubs.acs.org/jpcbfk/article/129/16/3948/3650020/Effect-of-Mutations-on-Smlt1473-Binding-to-Various)
+> *J. Phys. Chem. B* **2025**, 129 (16), 3948–3962.
+> Manuscript: [https://pubs.acs.org/doi/10.1021/acs.jpcb.4c08753](https://pubs.acs.org/doi/10.1021/acs.jpcb.4c08753)
+
+## Code, docking and running the analyses
+
+- [Complete source index](docs/CODE_INDEX.md): links to all **770 original code and configuration files**.
+- [Analysis and execution guide](docs/ANALYSIS_GUIDE.md): where to run the scripts, dependencies, input files, and analysis stages.
+- [Rosetta molecular docking reference](docs/DOCKING.md): official tutorials for docking, as requested by the author. The original study-specific docking scripts and flags are unavailable.
+- [Code availability audit](docs/CODE_AUDIT.md): archive/GitHub verification and known legacy syntax issues.
+- [Source checksums](SOURCE_SHA256SUMS) and [machine-readable audit](docs/code-audit.json).
+
+The 770 source/configuration files match the archived MD project byte for byte. They are preserved unchanged. Full trajectories and complete prepared simulation systems are not included, and the release audit did not rerun the calculations.
 
 ## Repository layout
 
